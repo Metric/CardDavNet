@@ -1,0 +1,75 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{F1EE3422-CC8C-42E0-8BCA-F18524A81127}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>CardDav</RootNamespace>
+    <AssemblyName>CardDav</AssemblyName>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="CardDavParser.cs" />
+    <Compile Include="Client.cs" />
+    <Compile Include="Card\DeliveryAddress.cs" />
+    <Compile Include="Card\DeliveryAddressCollection.cs" />
+    <Compile Include="Card\DeliveryAddressType_enum.cs" />
+    <Compile Include="Card\EmailAddress.cs" />
+    <Compile Include="Card\EmailAddressCollection.cs" />
+    <Compile Include="Card\EmailAddressType_enum.cs" />
+    <Compile Include="Card\Item.cs" />
+    <Compile Include="Card\ItemCollection.cs" />
+    <Compile Include="Card\Name.cs" />
+    <Compile Include="Card\PhoneNumber.cs" />
+    <Compile Include="Card\PhoneNumberCollection.cs" />
+    <Compile Include="Card\PhoneNumberType_enum.cs" />
+    <Compile Include="HTTPException.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Card\vCard.cs" />
+    <Compile Include="Response\AddressBookElement.cs" />
+    <Compile Include="Response\CardElement.cs" />
+    <Compile Include="Response\CardDavResponse.cs" />
+    <Compile Include="Utils\MIME\MimeReader.cs" />
+    <Compile Include="Utils\Mimes.cs" />
+    <Compile Include="Utils\Net.cs" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

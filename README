@@ -1,0 +1,48 @@
+C# .Net Implementation of the CardDav Client Protocol
+
+Originally based off of:
+https://raw.github.com/graviox/CardDAV-PHP/master/carddav.php
+
+Written from the ground up in C#, with vCard Reader and Writer from: 
+http://www.codeproject.com/Articles/16030/NET-vCard-API-for-creating-and-parsing-vCards
+
+Thanks Lumi!
+
+Though the vCard Reader and Writer needs to be updated to meet the new vCard 4.0 specification!
+
+It is Guaranteed to work with Google's CardDav, as that is the server I tested against for receiving CardDav data.
+
+To access Google's CardDav the following URL is used (Found this out after some trial and errors :P):
+https://google.com/m8/carddav/principals/__uids__/username@gmail.com/lists/
+
+Be sure to replace the word username with the proper email account you are trying to access.
+
+
+Simple usage for connecting to Google's CardDav:
+<code>
+using CardDav;
+using CardDav.Card;
+using CardDav.Response;
+
+CardDav.Client client = new CardDav.Client("https://google.com/m8/carddav/principals/__uids__/username@gmail.com/lists/, "username", "some password");
+
+CardDavResponse response = client.Get();
+
+/** Output the results from the Listing **/
+
+//Assuming you have a result text box to output too :P
+resultsTxt.Text = response.ToString();
+
+/** Set the client to the proper Address Book server URL **/
+// This is heavily assumming that there are address books and vcards!
+// Always check to see if CardDavResponse.AddressBooks.Count > 0
+// And always check to see if CardDavResponse.Cards.Count > 0
+client.SetServer(response.AddressBooks.First().Url.ToString());
+vCard card = client.GetVCard(response.Cards.First().Id);
+
+//Assuming you have a result text box to output too :P
+resultsTxt.Text = resultsTxt.Text + "\r\n\r\n\r\n" + card.ToString();
+</code>
+
+To see a demo application compile and run the CardDavDemo project.
+
