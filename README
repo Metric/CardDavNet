@@ -17,9 +17,9 @@ https://google.com/m8/carddav/principals/__uids__/username@gmail.com/lists/
 
 Be sure to replace the word username with the proper email account you are trying to access.
 
-
 Simple usage for connecting to Google's CardDav:
-<code>
+
+<pre>
 using CardDav;
 using CardDav.Card;
 using CardDav.Response;
@@ -42,7 +42,7 @@ vCard card = client.GetVCard(response.Cards.First().Id);
 
 //Assuming you have a result text box to output too :P
 resultsTxt.Text = resultsTxt.Text + "\r\n\r\n\r\n" + card.ToString();
-</code>
+</pre>
 
 To see a demo application compile and run the CardDavDemo project.
 
