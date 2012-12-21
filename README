@@ -1,4 +1,6 @@
-# CardDav.Net
+CardDav.Net
+==============
+
 C# .Net Implementation of the CardDav Client Protocol
 
 Originally based off of:
@@ -19,32 +21,32 @@ https://google.com/m8/carddav/principals/__uids__/username@gmail.com/lists/
 Be sure to replace the word username with the proper email account you are trying to access.
 
 Simple usage for connecting to Google's CardDav:
+```csharp
+    using CardDav;
+    using CardDav.Card;
+    using CardDav.Response;
 
-		using CardDav;
-		using CardDav.Card;
-		using CardDav.Response;
+    CardDav.Client client = new CardDav.Client("https://google.com/m8/carddav/principals/__uids__/username@gmail.com/lists/", "username", "some password");
 
-		CardDav.Client client = new CardDav.Client("https://google.com/m8/carddav/principals/__uids__/username@gmail.com/lists/", "username", "some password");
+    CardDavResponse response = client.Get();
 
-		CardDavResponse response = client.Get();
+    /** Output the results from the Listing **/
 
-		/** Output the results from the Listing **/
+    //Assuming you have a result text box to output too :P
 
-		//Assuming you have a result text box to output too :P
+    resultsTxt.Text = response.ToString();
 
-		resultsTxt.Text = response.ToString();
+    /** Set the client to the proper Address Book server URL **/
+    // This is heavily assumming that there are address books and vcards!
+    // Always check to see if CardDavResponse.AddressBooks.Count > 0
+    // And always check to see if CardDavResponse.Cards.Count > 0
 
-		/** Set the client to the proper Address Book server URL **/
-		// This is heavily assumming that there are address books and vcards!
-		// Always check to see if CardDavResponse.AddressBooks.Count > 0
-		// And always check to see if CardDavResponse.Cards.Count > 0
+    client.SetServer(response.AddressBooks.First().Url.ToString());
+    vCard card = client.GetVCard(response.Cards.First().Id);
 
-		client.SetServer(response.AddressBooks.First().Url.ToString());
-		vCard card = client.GetVCard(response.Cards.First().Id);
+    //Assuming you have a result text box to output too :P
 
-		//Assuming you have a result text box to output too :P
-
-		resultsTxt.Text = resultsTxt.Text + "\r\n\r\n\r\n" + card.ToString();
-
+    resultsTxt.Text = resultsTxt.Text + "\r\n\r\n\r\n" + card.ToString();
+```
 To see a demo application compile and run the CardDavDemo project.
 
