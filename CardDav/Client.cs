@@ -318,6 +318,7 @@ namespace CardDav
 
             XmlNodeList responses = document.GetElementsByTagName("response");
             CardDavResponse response = new CardDavResponse();
+            Uri serverUri = new Uri(this.serverUrl);
 
             foreach (XmlNode node in responses)
             {
@@ -330,12 +331,15 @@ namespace CardDav
 
                     Uri hrefUri = new Uri("https://localhost/" + href);
                     string id = Path.GetFileName(hrefUri.LocalPath).Replace(".vcf", "");
+                    string hrefWithoutIdWithoutVcf = href.Replace(id, "").Replace(".vcf", "");
+                    Uri addressBookUrlForCard = new Uri(serverUri.Scheme + "://" + serverUri.Host + hrefWithoutIdWithoutVcf);
 
                     if (!String.IsNullOrEmpty(id))
                     {
                         CardElement card = new CardElement();
 
                         card.Id = id;
+                        card.Url = addressBookUrlForCard;
                         card.eTag = CardDavParser.GetNodeContents(node, "getetag").FirstOrDefault().Replace("\"", "");
                         card.Modified = DateTime.Parse(CardDavParser.GetNodeContents(node, "getlastmodified").FirstOrDefault());
 
@@ -345,8 +349,6 @@ namespace CardDav
                 else
                 {
                     //It is a address book element
-
-                    Uri serverUri = new Uri(this.serverUrl);
 
                     if (!serverUri.PathAndQuery.Equals(href))
                     {

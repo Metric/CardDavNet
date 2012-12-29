@@ -28,9 +28,15 @@ namespace CardDav.Response
             set;
         }
 
+        public Uri Url
+        {
+            get;
+            set;
+        }
+
         public override string ToString()
         {
-            return "ID: " + Id + " eTag: " + eTag + " Modified: " + Modified.ToShortDateString();
+            return "ID: " + Id + " eTag: " + eTag + " Modified: " + Modified.ToShortDateString() + " Uri: " + Url.ToString();
         }
     }
 }
