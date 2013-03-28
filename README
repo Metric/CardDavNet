@@ -11,10 +11,7 @@ Thanks Lumi!
 
 Though the vCard reader and writer needs to be updated to meet the new vCard 4.0 specification!
 
-It is guaranteed to work with Google's CardDav, as that is the server I tested against for receiving CardDav data.
-
-To access Google's CardDav the following URL is used (Found this out after some trial and errors :P):
-https://google.com/m8/carddav/principals/__uids__/username@gmail.com/lists/
+Google has completely removed CalDav and CardDav support. Thanks Google, for not supporting open standards that everyone else supports. "Do no evil," my ass!
 
 Be sure to replace the word username with the proper email account you are trying to access.
 
@@ -24,7 +21,7 @@ Simple usage for connecting to Google's CardDav:
 		using CardDav.Card;
 		using CardDav.Response;
 
-		CardDav.Client client = new CardDav.Client("https://google.com/m8/carddav/principals/__uids__/username@gmail.com/lists/", "username", "some password");
+		CardDav.Client client = new CardDav.Client("url of carddav server go here", "username", "some password");
 
 		CardDavResponse response = client.Get();
 
