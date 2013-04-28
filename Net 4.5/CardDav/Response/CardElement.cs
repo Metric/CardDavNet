@@ -34,6 +34,12 @@ namespace CardDav.Response
             set;
         }
 
+        public string DavName
+        {
+            get;
+            set;
+        }
+
         public override string ToString()
         {
             return "ID: " + Id + " eTag: " + eTag + " Modified: " + Modified.ToShortDateString() + " Uri: " + Url.ToString();
