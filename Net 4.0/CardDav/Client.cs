@@ -97,8 +97,6 @@ namespace CardDav
 
         public vCard GetVCard(string id)
         {
-            id = id.Replace(".vcf", "");
-
             Dictionary<string, string> results = this.Query(this.serverUrl + id, "GET");
 
             if (results.ContainsKey("status"))
@@ -219,7 +217,8 @@ namespace CardDav
                 request.UserAgent = UserAgent + Version;
                 request.Method = method;
                 request.PreAuthenticate = true;
-                request.Headers.Add("Authorization", "Basic " + Convert.ToBase64String(Encoding.Default.GetBytes(this.authentication)));
+                //request.Headers.Add("Authorization", "Basic " + Convert.ToBase64String(Encoding.Default.GetBytes(this.authentication)));
+                request.Credentials = new NetworkCredential(this.username, this.password);
 
                 if (contentType != null)
                 {
@@ -311,6 +310,19 @@ namespace CardDav
             return results;
         }
 
+        public string ServerAddress {
+            get
+            {
+                Uri serverUri = new Uri(this.serverUrl);
+                if (serverUri.Port != 80)
+                {
+                    return serverUri.Scheme + "://" + serverUri.Host + ":" + serverUri.Port;
+                }
+
+                return serverUri.Scheme + "://" + serverUri.Host;
+            }
+        }
+
         private CardDavResponse SimplifyResponse(string results)
         {
             XmlDocument document = new XmlDocument();
@@ -331,14 +343,16 @@ namespace CardDav
 
                     Uri hrefUri = new Uri("https://localhost/" + href);
                     string id = Path.GetFileName(hrefUri.LocalPath).Replace(".vcf", "");
+                    string idWithExtension = Path.GetFileName(hrefUri.LocalPath);
                     string hrefWithoutIdWithoutVcf = href.Replace(id, "").Replace(".vcf", "");
-                    Uri addressBookUrlForCard = new Uri(serverUri.Scheme + "://" + serverUri.Host + hrefWithoutIdWithoutVcf);
+                    Uri addressBookUrlForCard = new Uri(this.ServerAddress + hrefWithoutIdWithoutVcf);
 
                     if (!String.IsNullOrEmpty(id))
                     {
                         CardElement card = new CardElement();
 
                         card.Id = id;
+                        card.DavName = idWithExtension;
                         card.Url = addressBookUrlForCard;
                         card.eTag = CardDavParser.GetNodeContents(node, "getetag").FirstOrDefault().Replace("\"", "");
                         card.Modified = DateTime.Parse(CardDavParser.GetNodeContents(node, "getlastmodified").FirstOrDefault());
@@ -352,7 +366,7 @@ namespace CardDav
 
                     if (!serverUri.PathAndQuery.Equals(href))
                     {
-                        string url = serverUri.Scheme + "://" + serverUri.Host + href;
+                        string url = this.ServerAddress + href;
 
                         AddressBookElement addressBook = new AddressBookElement();
 
