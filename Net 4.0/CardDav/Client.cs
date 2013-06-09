@@ -305,9 +305,7 @@ namespace CardDav
 
         private string cleanRawResponse(string response)
         {
-            string results = response.Replace("D:", "").Replace("d:", "").Replace("C:", "").Replace("c:", "");
-
-            return results;
+            return Regex.Replace(response, "((?<=</?)\\w+:(?<elem>\\w+)|\\w+:(?<elem>\\w+)(?==\"))","${elem}");
         }
 
         public string ServerAddress {
@@ -355,8 +353,18 @@ namespace CardDav
                         card.Id = id;
                         card.DavName = idWithExtension;
                         card.Url = addressBookUrlForCard;
-                        card.eTag = CardDavParser.GetNodeContents(node, "getetag").FirstOrDefault().Replace("\"", "");
-                        card.Modified = DateTime.Parse(CardDavParser.GetNodeContents(node, "getlastmodified").FirstOrDefault());
+
+                        string etag = CardDavParser.GetNodeContents(node, "getetag").FirstOrDefault();
+
+                        if(!String.IsNullOrEmpty(etag))
+                            card.eTag = etag.Replace("\"", "");
+
+                        string dateString = CardDavParser.GetNodeContents(node, "getlastmodified").FirstOrDefault();
+
+                        if (!String.IsNullOrEmpty(dateString))
+                            card.Modified = DateTime.Parse(dateString);
+                        else
+                            card.Modified = DateTime.Now;
 
                         response.Cards.Add(card);
                     }
@@ -370,7 +378,13 @@ namespace CardDav
 
                     addressBook.Url = new Uri(url);
                     addressBook.DisplayName = CardDavParser.GetNodeContents(node, "displayname").FirstOrDefault();
-                    addressBook.Modified = DateTime.Parse(CardDavParser.GetNodeContents(node, "getlastmodified").FirstOrDefault());
+
+                    string dateString = CardDavParser.GetNodeContents(node, "getlastmodified").FirstOrDefault();
+
+                    if (!String.IsNullOrEmpty(dateString))
+                        addressBook.Modified = DateTime.Parse(dateString);
+                    else
+                        addressBook.Modified = DateTime.Now;
 
                     response.AddressBooks.Add(addressBook);
                 }
