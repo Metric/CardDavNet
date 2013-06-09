@@ -28,5 +28,21 @@ namespace CardDav
 
             return results;
         }
+
+        public static XmlNode GetNodeByTagName(XmlNode parentNode, string tag) 
+        {
+            XmlNode node = null;
+
+            foreach (XmlNode n in parentNode.ChildNodes)
+            {
+                if (n.Name.ToLower().Equals(tag.ToLower()))
+                {
+                    node = n;
+                    break;
+                }
+            }
+
+            return node;
+        }
     }
 }

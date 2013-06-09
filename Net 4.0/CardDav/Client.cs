@@ -335,9 +335,10 @@ namespace CardDav
             foreach (XmlNode node in responses)
             {
                 string contentType = CardDavParser.GetNodeContents(node, "getcontenttype").FirstOrDefault();
+                XmlNode addressBookNode = CardDavParser.GetNodeByTagName(node, "addressbook");
                 string href = CardDavParser.GetNodeContents(node, "href").FirstOrDefault();
 
-                if (contentType.IndexOf("vcard") > -1 || href.IndexOf("vcf") > -1)
+                if (!String.IsNullOrEmpty(contentType) && !String.IsNullOrEmpty(href) && (contentType.IndexOf("vcard") > -1 || href.IndexOf("vcf") > -1))
                 {
                     //It is a vcard element
 
@@ -360,22 +361,18 @@ namespace CardDav
                         response.Cards.Add(card);
                     }
                 }
-                else
+                else if(addressBookNode != null && !String.IsNullOrEmpty(href))
                 {
                     //It is a address book element
+                    string url = this.ServerAddress + href;
 
-                    if (!serverUri.PathAndQuery.Equals(href))
-                    {
-                        string url = this.ServerAddress + href;
+                    AddressBookElement addressBook = new AddressBookElement();
 
-                        AddressBookElement addressBook = new AddressBookElement();
+                    addressBook.Url = new Uri(url);
+                    addressBook.DisplayName = CardDavParser.GetNodeContents(node, "displayname").FirstOrDefault();
+                    addressBook.Modified = DateTime.Parse(CardDavParser.GetNodeContents(node, "getlastmodified").FirstOrDefault());
 
-                        addressBook.Url = new Uri(url);
-                        addressBook.DisplayName = CardDavParser.GetNodeContents(node, "displayname").FirstOrDefault();
-                        addressBook.Modified = DateTime.Parse(CardDavParser.GetNodeContents(node, "getlastmodified").FirstOrDefault());
-
-                        response.AddressBooks.Add(addressBook);
-                    }
+                    response.AddressBooks.Add(addressBook);
                 }
             }
 
