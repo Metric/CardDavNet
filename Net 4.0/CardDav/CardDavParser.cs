@@ -29,20 +29,22 @@ namespace CardDav
             return results;
         }
 
-        public static XmlNode GetNodeByTagName(XmlNode parentNode, string tag) 
+        public static List<XmlNode> GetNodesByTagName(XmlNode parentNode, string tag, List<XmlNode> results = null) 
         {
-            XmlNode node = null;
+            if (results == null) results = new List<XmlNode>();
 
             foreach (XmlNode n in parentNode.ChildNodes)
             {
                 if (n.Name.ToLower().Equals(tag.ToLower()))
+                    results.Add(n);
+
+                if (n.HasChildNodes)
                 {
-                    node = n;
-                    break;
+                    GetNodesByTagName(n, tag, results);
                 }
             }
 
-            return node;
+            return results;
         }
     }
 }

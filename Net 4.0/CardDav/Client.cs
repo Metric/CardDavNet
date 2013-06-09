@@ -335,7 +335,7 @@ namespace CardDav
             foreach (XmlNode node in responses)
             {
                 string contentType = CardDavParser.GetNodeContents(node, "getcontenttype").FirstOrDefault();
-                XmlNode addressBookNode = CardDavParser.GetNodeByTagName(node, "addressbook");
+                XmlNode addressBookNode = CardDavParser.GetNodesByTagName(node, "addressbook").FirstOrDefault();
                 string href = CardDavParser.GetNodeContents(node, "href").FirstOrDefault();
 
                 if (!String.IsNullOrEmpty(contentType) && !String.IsNullOrEmpty(href) && (contentType.IndexOf("vcard") > -1 || href.IndexOf("vcf") > -1))
