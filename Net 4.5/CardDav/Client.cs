@@ -23,27 +23,33 @@ namespace CardDav
         private string authentication;
         private string username;
         private string password;
+        private string oAuth2AccessToken;
+
+        private const string authorizationHeaderName = "Authorization";
+        private const string oAuth2TokenType = "Bearer";
 
         public Client() { }
 
         public Client(string url)
         {
-            this.serverUrl = url;
+            SetServer(url);
+        }
 
-            if (!this.serverUrl.Substring(this.serverUrl.Length - 1).Equals("/"))
-                this.serverUrl = this.serverUrl + "/";
+        /// <summary>
+        /// Creates a new instance for connecting to a CardDAV endpoint, which uses OAuth 2.0 authorization.
+        /// </summary>
+        /// <param name="url">CardDAV endpoint URL</param>
+        /// <param name="oAuth2AccessToken">OAuth 2.0 access token</param>
+        public Client(string url, string oAuth2AccessToken)
+        {
+            SetServer(url);
+            this.oAuth2AccessToken = oAuth2AccessToken;
         }
 
         public Client(string url, string username, string password)
         {
-            this.serverUrl = url;
-
-            if (!this.serverUrl.Substring(this.serverUrl.Length - 1).Equals("/"))
-                this.serverUrl = this.serverUrl + "/";
-
-            this.username = username;
-            this.password = password;
-            this.authentication = this.username + ":" + this.password;
+            SetServer(url);
+            SetAuthentication(username, password);
         }
 
         public void SetAuthentication(string username, string password)
@@ -55,7 +61,8 @@ namespace CardDav
 
         public void SetServer(string url)
         {
-            this.serverUrl = url;
+            // make sure the url always ends with /
+            this.serverUrl = url.EndsWith("/") ? url : url + "/";
         }
 
         public CardDavResponse Get()
@@ -212,13 +219,17 @@ namespace CardDav
             HttpWebRequest request = HttpWebRequest.CreateHttp(url);
             Dictionary<string, string> queryResponse = new Dictionary<string, string>();
 
-            if(this.authentication != null)
+            if(!string.IsNullOrEmpty(authentication) || !string.IsNullOrEmpty(oAuth2AccessToken))
             {
                 request.UserAgent = UserAgent + Version;
                 request.Method = method;
                 request.PreAuthenticate = true;
-                //request.Headers.Add("Authorization", "Basic " + Convert.ToBase64String(Encoding.Default.GetBytes(this.authentication)));
-                request.Credentials = new NetworkCredential(this.username, this.password);
+                //request.Headers.Add(authorizationHeaderName, "Basic " + Convert.ToBase64String(Encoding.Default.GetBytes(this.authentication)));
+                if (!string.IsNullOrEmpty(authentication))
+                    request.Credentials = new NetworkCredential(this.username, this.password);
+                else if (!string.IsNullOrEmpty(oAuth2AccessToken))
+                    // if the CardDAV endpoint uses OAuth 2.0 authorization, set the appropriate header
+                    request.Headers.Add(authorizationHeaderName, string.Format("{0} {1}", oAuth2TokenType, oAuth2AccessToken));
 
                 if (contentType != null)
                 {
@@ -296,7 +307,7 @@ namespace CardDav
 
                 return id;
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 throw new HTTPException("Could not generate new vCard Id");
             }
