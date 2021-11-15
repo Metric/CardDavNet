@@ -200,7 +200,7 @@ namespace CardDav
             {
                 string status = results["status"];
 
-                if (status.Equals("200"))
+                if (status.Equals("200") || status.Equals("OK"))
                     return true;
             }
 
