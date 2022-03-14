@@ -73,7 +73,7 @@ namespace CardDav
             {
                 string status = result["status"];
 
-                if (status.Equals("200") || status.Equals("207"))
+                if (status.Equals("200") || status.Equals("207") || status.ToLower().Equals("ok"))
                 {
                     if (result.ContainsKey("response"))
                     {
@@ -200,7 +200,7 @@ namespace CardDav
             {
                 string status = results["status"];
 
-                if (status.Equals("200") || status.Equals("OK"))
+                if (status.Equals("200") || status.ToLower().Equals("ok"))
                     return true;
             }
 
